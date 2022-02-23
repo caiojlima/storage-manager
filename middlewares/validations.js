@@ -1,5 +1,3 @@
-const productsServices = require('../services/products');
-
 const nameValidation = (req, res, next) => {
   try {
     const { name } = req.body;

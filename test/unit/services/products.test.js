@@ -92,11 +92,13 @@ describe('Testando os productsServices', () => {
 
   describe('3 - Testando o productServices.createProduct', () => {
     before(() => {
+      sinon.stub(productServices, 'getProducts').returns(getAllReturn);
       sinon.stub(productModels, 'create').returns(createReturn);
     });
 
     after(() => {
       productModels.create.restore();
+      productServices.getProducts.restore();
     });
 
     it('Testando se o retorno da funçao createProduct está correta', async () => {

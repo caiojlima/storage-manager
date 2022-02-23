@@ -46,4 +46,24 @@ describe('Testando salesModels', () => {
 
   });
 
+  describe('1- testando salesModels.readById', () => {
+    before(() => {
+      sinon.stub(connection, 'execute').resolves([[sales[0]], []]);
+
+    });
+
+    after(() => {
+      connection.execute.restore();
+
+    });
+
+    it('verifica se a função readById tem o retorno esperado', async () => {
+      const result = await salesModel.readById();
+      expect(result).to.be.an('array');
+      expect(result[0]).to.be.equal(sales[0]);
+
+    });
+
+  });
+
 });
