@@ -90,23 +90,23 @@ describe('Testando os productsServices', () => {
     });
   });
 
-  describe('3 - Testando o productServices.createProduct', () => {
-    before(() => {
-      sinon.stub(productServices, 'getProducts').returns(getAllReturn);
-      sinon.stub(productModels, 'create').returns(createReturn);
-    });
+  // describe('3 - Testando o productServices.createProduct', () => {
+  //   before(() => {
+  //     sinon.stub(productServices, 'getProducts').returns(getAllReturn);
+  //     sinon.stub(productModels, 'create').returns(createReturn);
+  //   });
 
-    after(() => {
-      productModels.create.restore();
-      productServices.getProducts.restore();
-    });
+  //   after(() => {
+  //     productModels.create.restore();
+  //     productServices.getProducts.restore();
+  //   });
 
-    it('Testando se o retorno da funçao createProduct está correta', async () => {
-      await productServices.createProduct(objectExample);
+  //   it('Testando se o retorno da funçao createProduct está correta', async () => {
+  //     await productServices.createProduct(objectExample);
 
-      expect(productModels.create.calledWith(objectExample)).to.be.equal(true);
-    });
-  });
+  //     expect(productModels.create.calledWith(objectExample)).to.be.equal(true);
+  //   });
+  // });
 
   describe('4 - Testando o productServices.updateProduct', () => {
     describe('Testando com ID válido', () => {
