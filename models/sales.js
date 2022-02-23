@@ -62,9 +62,21 @@ const update = async (id, productsArray) => {
   };
 };
 
+const exclude = async (id) => {
+  const [result] = await connection.execute(
+    'DELETE FROM StoreManager.sales_products WHERE sale_id = ?;',
+    [id],
+  );
+
+  if (!result.affectedRows) return { code: 404, message: 'Sale not found' };
+
+  return result;
+};
+
 module.exports = {
   read,
   readById,
   create,
   update,
+  exclude,
 };
