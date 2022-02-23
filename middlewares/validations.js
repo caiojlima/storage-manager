@@ -22,19 +22,6 @@ const nameLengthValidation = (req, res, next) => {
   }
 };
 
-const nameExistenceValidation = async (req, res, next) => {
-  try {
-    const { name } = req.body;
-    const allProducts = await productsServices.getProducts();
-    if (allProducts.some((obj) => obj.name === name)) {
-      return res.status(409).json({ message: 'Product already exists' });
-    }
-    next();
-  } catch (e) {
-    next(e);
-  }
-};
-
 const quantityValidation = (req, res, next) => {
   try {
     const { quantity } = req.body;
@@ -91,7 +78,6 @@ module.exports = {
   nameLengthValidation,
   quantityValidation,
   quantityValueValidation,
-  nameExistenceValidation,
   productIdValidation,
   productQuantityValidation,
 };

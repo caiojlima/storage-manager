@@ -13,6 +13,10 @@ const getProductsById = async (id) => {
 };
 
 const createProduct = async ({ name, quantity }) => {
+  const allProducts = await getProducts();
+    if (allProducts.some((obj) => obj.name === name)) {
+      return ({ code: 409, message: 'Product already exists' });
+    }
   const newProduct = await productsModel.create({ name, quantity });
   const id = newProduct.insertId;
 

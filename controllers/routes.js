@@ -1,7 +1,7 @@
 const express = require('express');
 const productsController = require('./products');
 const salesController = require('./sales');
-const { nameValidation, nameExistenceValidation, nameLengthValidation,
+const { nameValidation, nameLengthValidation,
   quantityValidation, quantityValueValidation,
   productIdValidation, productQuantityValidation } = require('../middlewares/validations');
 
@@ -12,7 +12,7 @@ productsRouter.get('/', productsController.getAllProducts);
 
 productsRouter.get('/:id', productsController.getProductById);
 
-productsRouter.post('/', nameValidation, nameLengthValidation, nameExistenceValidation,
+productsRouter.post('/', nameValidation, nameLengthValidation,
 quantityValidation, quantityValueValidation, productsController.addProduct);
 
 productsRouter.put('/:id', nameValidation, nameLengthValidation,

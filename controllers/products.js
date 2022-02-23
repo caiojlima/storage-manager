@@ -24,6 +24,7 @@ const addProduct = async (req, res, next) => {
   try {
     const { name, quantity } = req.body;
     const result = await productsService.createProduct({ name, quantity });
+    if (result.code) return res.status(result.code).json({ message: result.message });
     return res.status(201).json(result);
   } catch (e) {
     next(e);
