@@ -1,4 +1,5 @@
 const connection = require('./connection');
+const concatHelper = require('../utils/queryConcatHelper');
 
 const read = async () => {
   const [result] = await connection.execute(
@@ -27,16 +28,16 @@ const create = async (productsArray, queryArray) => {
   );
   const id = salesQuery.insertId;
 
-  let query = `INSERT INTO StoreManager.sales_products (sale_id, product_id, quantity) 
-   VALUES (${id}, ?, ?)`;
-
-   for (let i = 1; i < productsArray.length; i += 1) {
-      query += `, (${id}, ?, ?)`;
-   }
+  const query = concatHelper(id, productsArray);
   
   await connection.execute(
     query,
     queryArray,
+  );
+
+  await connection.execute(
+    'UPDATE StoreManager.products SET quantity = quantity - ? WHERE id = ?;',
+    [productsArray[0].quantity, queryArray[0]],
   );
 
   return {
@@ -63,12 +64,18 @@ const update = async (id, productsArray) => {
 };
 
 const exclude = async (id) => {
+  const [salesResult] = await readById(id);
   const [result] = await connection.execute(
     'DELETE FROM StoreManager.sales_products WHERE sale_id = ?;',
     [id],
   );
 
   if (!result.affectedRows) return { code: 404, message: 'Sale not found' };
+  console.log(salesResult);
+  await connection.execute(
+    'UPDATE StoreManager.products SET quantity = quantity + ? WHERE id = ?;',
+    [salesResult.quantity, salesResult.product_id],
+  );
 
   return result;
 };
