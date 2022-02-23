@@ -64,18 +64,20 @@ const update = async (id, productsArray) => {
 };
 
 const exclude = async (id) => {
-  const [salesResult] = await readById(id);
+  const salesResult = await readById(id);
   const [result] = await connection.execute(
     'DELETE FROM StoreManager.sales_products WHERE sale_id = ?;',
     [id],
-  );
-
-  if (!result.affectedRows) return { code: 404, message: 'Sale not found' };
-  console.log(salesResult);
-  await connection.execute(
-    'UPDATE StoreManager.products SET quantity = quantity + ? WHERE id = ?;',
-    [salesResult.quantity, salesResult.product_id],
-  );
+    );
+    
+    if (!result.affectedRows) return { code: 404, message: 'Sale not found' };
+    
+  if (salesResult.length === 1) {
+    await connection.execute(
+      'UPDATE StoreManager.products SET quantity = quantity + ? WHERE id = ?;',
+      [salesResult[0].quantity, salesResult[0].product_id],
+    );
+  }
 
   return result;
 };
