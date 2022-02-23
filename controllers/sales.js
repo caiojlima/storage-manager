@@ -24,6 +24,7 @@ const createNewSale = async (req, res, next) => {
   try {
     const saleArray = [...req.body];
     const result = await salesServices.createSale(saleArray);
+    if (result.code) return res.status(result.code).json({ message: result.message });
     return res.status(201).json(result);
   } catch (e) {
     next(e);

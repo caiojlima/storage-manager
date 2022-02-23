@@ -1,5 +1,6 @@
 const connection = require('./connection');
 const concatHelper = require('../utils/queryConcatHelper');
+const productQuantityAvailable = require('../utils/productQuantityAvailable');
 
 const read = async () => {
   const [result] = await connection.execute(
@@ -25,11 +26,13 @@ const readById = async (id) => {
 const create = async (productsArray, queryArray) => {
   const [salesQuery] = await connection.execute(
     'INSERT INTO StoreManager.sales (date) VALUES (NOW());',
-  );
-  const id = salesQuery.insertId;
+    );
+    const id = salesQuery.insertId;
+    
+    const query = concatHelper(id, productsArray);
 
-  const query = concatHelper(id, productsArray);
-  
+    const isQuantityAvailable = await productQuantityAvailable(productsArray, queryArray);
+
   await connection.execute(
     query,
     queryArray,
@@ -40,7 +43,7 @@ const create = async (productsArray, queryArray) => {
     [productsArray[0].quantity, queryArray[0]],
   );
 
-  return {
+  return isQuantityAvailable || {
     id,
     itemsSold: productsArray,
   };
