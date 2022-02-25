@@ -24,14 +24,13 @@ const readById = async (id) => {
 };
 
 const create = async (productsArray, queryArray) => {
-  const [salesQuery] = await connection.execute(
-    'INSERT INTO StoreManager.sales (date) VALUES (NOW());',
-    );
-    const id = salesQuery.insertId;
+    const [[salesQuery], isQuantityAvailable] = await Promise.all([connection.execute(
+      'INSERT INTO StoreManager.sales (date) VALUES (NOW());',
+      ), await productQuantityAvailable(productsArray, queryArray)]);
     
-    const query = concatHelper(id, productsArray);
+    const id = salesQuery.insertId;
 
-    const isQuantityAvailable = await productQuantityAvailable(productsArray, queryArray);
+    const query = concatHelper(id, productsArray);
 
   await connection.execute(
     query,
@@ -67,14 +66,13 @@ const update = async (id, productsArray) => {
 };
 
 const exclude = async (id) => {
-  const salesResult = await readById(id);
-  const [result] = await connection.execute(
-    'DELETE FROM StoreManager.sales_products WHERE sale_id = ?;',
-    [id],
-    );
-    
-    if (!result.affectedRows) return { code: 404, message: 'Sale not found' };
-    
+  const [salesResult, [result]] = await Promise.all([readById(id), connection.execute(
+  'DELETE FROM StoreManager.sales_products WHERE sale_id = ?;',
+  [id],
+  )]);
+
+  if (!result.affectedRows) return { code: 404, message: 'Sale not found' };
+
   if (salesResult.length === 1) {
     await connection.execute(
       'UPDATE StoreManager.products SET quantity = quantity + ? WHERE id = ?;',
