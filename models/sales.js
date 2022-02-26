@@ -4,8 +4,8 @@ const productQuantityAvailable = require('../utils/productQuantityAvailable');
 
 const read = async () => {
   const [result] = await connection.execute(
-    `SELECT p.*, s.date from StoreManager.sales_products as p INNER JOIN
-    StoreManager.sales as s where p.sale_id = s.id;`,
+    `SELECT p.*, s.date from sql10475417.sales_products as p INNER JOIN
+    sql10475417.sales as s where p.sale_id = s.id;`,
   );
   return result;
 };
@@ -13,8 +13,8 @@ const read = async () => {
 const readById = async (id) => {
   const [result] = await connection.execute(
     `SELECT
-    p.product_id, p.quantity, s.date from StoreManager.sales_products p
-    INNER JOIN StoreManager.sales s where p.sale_id = s.id AND  p.sale_id = ?;`,
+    p.product_id, p.quantity, s.date from sql10475417.sales_products p
+    INNER JOIN sql10475417.sales s where p.sale_id = s.id AND  p.sale_id = ?;`,
     [id],
   );
 
@@ -25,7 +25,7 @@ const readById = async (id) => {
 
 const create = async (productsArray, queryArray) => {
     const [[salesQuery], isQuantityAvailable] = await Promise.all([connection.execute(
-      'INSERT INTO StoreManager.sales (date) VALUES (NOW());',
+      'INSERT INTO sql10475417.sales (date) VALUES (NOW());',
       ), await productQuantityAvailable(productsArray, queryArray)]);
     
     const id = salesQuery.insertId;
@@ -38,7 +38,7 @@ const create = async (productsArray, queryArray) => {
   );
 
   await connection.execute(
-    'UPDATE StoreManager.products SET quantity = quantity - ? WHERE id = ?;',
+    'UPDATE sql10475417.products SET quantity = quantity - ? WHERE id = ?;',
     [productsArray[0].quantity, queryArray[0]],
   );
 
@@ -51,7 +51,7 @@ const create = async (productsArray, queryArray) => {
 const update = async (id, productsArray) => {
   const { productId, quantity } = productsArray[0];
   const [result] = await connection.execute(
-    `UPDATE StoreManager.sales_products
+    `UPDATE sql10475417.sales_products
     SET product_id = ?, quantity = ?
     WHERE sale_id = ?`,
     [productId, quantity, id],
@@ -67,7 +67,7 @@ const update = async (id, productsArray) => {
 
 const exclude = async (id) => {
   const [salesResult, [result]] = await Promise.all([readById(id), connection.execute(
-  'DELETE FROM StoreManager.sales_products WHERE sale_id = ?;',
+  'DELETE FROM sql10475417.sales_products WHERE sale_id = ?;',
   [id],
   )]);
 
@@ -75,7 +75,7 @@ const exclude = async (id) => {
 
   if (salesResult.length === 1) {
     await connection.execute(
-      'UPDATE StoreManager.products SET quantity = quantity + ? WHERE id = ?;',
+      'UPDATE sql10475417.products SET quantity = quantity + ? WHERE id = ?;',
       [salesResult[0].quantity, salesResult[0].product_id],
     );
   }

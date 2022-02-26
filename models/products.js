@@ -2,14 +2,14 @@ const connection = require('./connection');
 
 const read = async () => {
   const [result] = await connection.execute(
-    'SELECT * FROM StoreManager.products;',
+    'SELECT * FROM sql10475417.products;',
   );
   return result;
 };
 
 const readById = async (id) => {
   const [result] = await connection.execute(
-    'SELECT * FROM StoreManager.products WHERE id = ?;',
+    'SELECT * FROM sql10475417.products WHERE id = ?;',
     [id],
   );
 
@@ -18,7 +18,7 @@ const readById = async (id) => {
 
 const create = async ({ name, quantity }) => {
   const [result] = await connection.execute(
-    'INSERT INTO StoreManager.products (name, quantity) VALUES (?, ?);',
+    'INSERT INTO sql10475417.products (name, quantity) VALUES (?, ?);',
     [name, quantity],
   );
   return result;
@@ -26,7 +26,7 @@ const create = async ({ name, quantity }) => {
 
 const update = async ({ id, name, quantity }) => {
   const [result] = await connection.execute(
-    'UPDATE StoreManager.products SET name = ?, quantity = ? where id = ?;',
+    'UPDATE sql10475417.products SET name = ?, quantity = ? where id = ?;',
     [name, quantity, id],
   );
   return result;
@@ -34,7 +34,7 @@ const update = async ({ id, name, quantity }) => {
 
 const exclude = async (id) => {
   const [result] = await connection.execute(
-    'DELETE FROM StoreManager.products WHERE id = ?;',
+    'DELETE FROM sql10475417.products WHERE id = ?;',
     [id],
   );
   return result;
