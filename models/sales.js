@@ -24,8 +24,9 @@ const readById = async (id) => {
 };
 
 const create = async (productsArray, queryArray) => {
+    const date = new Date();
     const [[salesQuery], isQuantityAvailable] = await Promise.all([connection.execute(
-      'INSERT INTO sql10475417.sales (date) VALUES (NOW());',
+      `INSERT INTO sql10475417.sales (date) VALUES (${date.getDate()});`,
       ), await productQuantityAvailable(productsArray, queryArray)]);
     
     const id = salesQuery.insertId;
