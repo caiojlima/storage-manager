@@ -84,7 +84,7 @@ const exclude = async (id) => {
 };
 
 module.exports = {
-  read,
+  read, 
   readById,
   create,
   update,
