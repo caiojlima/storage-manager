@@ -182,6 +182,27 @@ describe('Testando os productsControllers', () => {
       });
     });
 
+    describe('Testando com produto já existente', () => {
+      before(() => {
+        req.body = sinon.stub().returns({ name: 'Escova de cabelo', quantity: 25 });
+        res.status = sinon.stub().returns(res);
+        res.json = sinon.stub().returns();
+        sinon.stub(productServices, 'createProduct').returns({ code: 409, message: 'Product already exists' });
+      });
+  
+      after(() => {
+        productServices.createProduct.restore();
+      });
+
+      it('Testa se o addProduct tem a mensagem de erro esperada', async () => {
+        await productController.addProduct(req, res, next);
+
+        expect(res.status.calledWith(409)).to.be.equal(true);
+
+        expect(res.json.calledWith({  message: 'Product already exists' })).to.be.equal(true);
+      })
+    });
+
     describe('Testando os erros', () => {
       before(() => {
         next = sinon.stub().returns();
